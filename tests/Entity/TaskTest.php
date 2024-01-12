@@ -3,7 +3,6 @@
 namespace App\Tests\Entity;
 
 use App\Entity\Task;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
