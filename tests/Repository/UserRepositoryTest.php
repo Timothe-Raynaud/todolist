@@ -8,6 +8,9 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class UserRepositoryTest extends KernelTestCase
 {
+    private const USERNAME = 'TestUser';
+    private const PASSWORD = 'TestPassword';
+    private const EMAIL = 'test@example.com';
     private UserRepository $userRepository;
 
     protected function setUp(): void
@@ -21,27 +24,21 @@ class UserRepositoryTest extends KernelTestCase
     public function testSaveAndFindUser(): void
     {
         $user = new User();
-        $user->setUsername('TestUser');
-        $user->setPassword('TestPassword');
-        $user->setEmail('test@example.com');
-
+        $user->setUsername(self::USERNAME);
+        $user->setPassword(self::PASSWORD);
+        $user->setEmail(self::EMAIL);
         $this->userRepository->save($user, true);
 
         $foundUser = $this->userRepository->find($user->getId());
         $this->assertNotNull($foundUser);
-        $this->assertEquals('TestUser', $foundUser->getUsername());
-        $this->assertEquals('test@example.com', $foundUser->getEmail());
+        $this->assertEquals(self::USERNAME, $foundUser->getUsername());
+        $this->assertEquals(self::EMAIL, $foundUser->getEmail());
     }
 
     public function testRemoveUser(): void
     {
-        $user = new User();
-        $user->setUsername('UserToRemove');
-        $user->setPassword('RemovePassword');
-        $user->setEmail('remove@example.com');
-
-        $this->userRepository->save($user, true);
-
+        $user = $this->userRepository->findOneBy(['email' => self::EMAIL]);
+        // Get id of object before deletion
         $id = $user->getId();
         $this->userRepository->remove($user, true);
 

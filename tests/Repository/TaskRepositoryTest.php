@@ -8,6 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class TaskRepositoryTest extends KernelTestCase
 {
+    private const TITLE = 'Task fo test';
+    private const CONTENT = 'Content of the test task';
     private TaskRepository $taskRepository;
 
     protected function setUp(): void
@@ -21,25 +23,21 @@ class TaskRepositoryTest extends KernelTestCase
     public function testSaveAndFindTask(): void
     {
         $task = new Task();
-        $task->setTitle('Test Task');
-        $task->setContent('Content of the test task');
+        $task->setTitle(self::TITLE);
+        $task->setContent(self::CONTENT);
 
         $this->taskRepository->save($task, true);
 
         $foundTask = $this->taskRepository->find($task->getId());
         $this->assertNotNull($foundTask);
-        $this->assertEquals('Test Task', $foundTask->getTitle());
-        $this->assertEquals('Content of the test task', $foundTask->getContent());
+        $this->assertEquals(self::TITLE, $foundTask->getTitle());
+        $this->assertEquals(self::CONTENT, $foundTask->getContent());
     }
 
     public function testRemoveTask(): void
     {
-        $task = new Task();
-        $task->setTitle('Task to Remove');
-        $task->setContent('This task will be removed');
-
-        $this->taskRepository->save($task, true);
-
+        $task = $this->taskRepository->findOneBy(['title' => self::TITLE]);
+        // Get id of object before deletion
         $id = $task->getId();
         $this->taskRepository->remove($task, true);
 
