@@ -4,12 +4,12 @@ namespace App\Tests\DataFixtures;
 
 use App\DataFixtures\TaskFixture;
 use App\DataFixtures\UserFixture;
-use App\Entity\User;
+use App\Entity\Task;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class UserFixtureTest extends KernelTestCase
+class TaskFixtureTest extends KernelTestCase
 {
     private EntityManagerInterface $entityManager;
 
@@ -26,8 +26,6 @@ class UserFixtureTest extends KernelTestCase
         $purger = new ORMPurger($this->entityManager);
         $purger->purge();
 
-        $fixture = new UserFixture();
-        $fixture->load($this->entityManager);
         $fixture = new TaskFixture();
         $fixture->load($this->entityManager);
     }
@@ -35,9 +33,9 @@ class UserFixtureTest extends KernelTestCase
 
     public function testTricksFixture(): void
     {
-        $user = $this->entityManager->getRepository(User::class)->findAll();
-        $this->assertCount(1, $user);
+        $task = $this->entityManager->getRepository(Task::class)->findAll();
+        $this->assertCount(10, $task);
 
-        $this->assertEquals('aaaa', $user[0]->getUsername());
+        $this->assertEquals('Task 1', $task[0]->getTitle());
     }
 }
