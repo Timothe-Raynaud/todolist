@@ -23,7 +23,7 @@ class DefaultControllerTest extends WebTestCase
             ->getManager();
     }
 
-    public function testIndexAction(): void
+    public function testIndex(): void
     {
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'aaaa']);
         $this->client->loginUser($user);
@@ -34,7 +34,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Bienvenue sur Todo List, l\'application vous permettant de gérer l\'ensemble de vos tâches sans effort !');
     }
 
-    public function testIndexActionWithoutUser(): void
+    public function testIndexWithoutUser(): void
     {
         $crawler = $this->client->request('GET', '/');
 
