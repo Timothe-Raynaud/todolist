@@ -23,6 +23,8 @@ class UserControllerTest extends WebTestCase
             ->getManager();
 
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'aaaa']);
+        $this->assertTrue($user instanceof User, 'Aucun utilisateur trouvé');
+
         $this->client->loginUser($user);
     }
 

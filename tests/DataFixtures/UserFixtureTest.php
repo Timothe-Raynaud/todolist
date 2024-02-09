@@ -8,6 +8,7 @@ use App\Entity\User;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtureTest extends KernelTestCase
 {
@@ -16,24 +17,26 @@ class UserFixtureTest extends KernelTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        self::bootKernel();
 
-        $kernel = self::bootKernel();
+        $container = self::getContainer();
 
-        $this->entityManager = $kernel->getContainer()
-            ->get('doctrine')
+        $this->entityManager = $container->get('doctrine')
             ->getManager();
 
         $purger = new ORMPurger($this->entityManager);
         $purger->purge();
 
-        $fixture = new UserFixture();
+        $passwordHasher = $container->get(UserPasswordHasherInterface::class);
+        $fixture = new UserFixture($passwordHasher);
         $fixture->load($this->entityManager);
+
         $fixture = new TaskFixture();
         $fixture->load($this->entityManager);
     }
 
 
-    public function testTricksFixture(): void
+    public function testUserFixture(): void
     {
         $user = $this->entityManager->getRepository(User::class)->findAll();
         $this->assertCount(1, $user);

@@ -26,6 +26,8 @@ class DefaultControllerTest extends WebTestCase
     public function testIndex(): void
     {
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'aaaa']);
+        $this->assertTrue($user instanceof User, 'Aucun utilisateur trouvé');
+
         $this->client->loginUser($user);
 
         $crawler = $this->client->request('GET', '/');
