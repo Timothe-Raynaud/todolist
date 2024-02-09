@@ -14,20 +14,20 @@ use Symfony\Component\Routing\Attribute\Route;
 class TaskController extends AbstractController
 {
     #[Route(path: '/tasks', name: 'task_list')]
-    public function listAction(TaskRepository $taskRepository) : Response
+    public function list(TaskRepository $taskRepository) : Response
     {
         return $this->render('task/list.html.twig', ['tasks' => $taskRepository->findAll()]);
     }
 
     #[Route(path: '/tasks/create', name: 'task_create')]
-    public function createAction(Request $request, EntityManagerInterface $em) : Response
+    public function create(Request $request, EntityManagerInterface $em) : Response
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
             $em->persist($task);
             $em->flush();
@@ -41,13 +41,13 @@ class TaskController extends AbstractController
     }
 
     #[Route(path: '/tasks/{id}/edit', name: 'task_edit')]
-    public function editAction(Task $task, Request $request, EntityManagerInterface $em): Response
+    public function edit(Task $task, Request $request, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
@@ -62,7 +62,7 @@ class TaskController extends AbstractController
     }
 
     #[Route(path: '/tasks/{id}/toggle', name: 'task_toggle')]
-    public function toggleTaskAction(Task $task, EntityManagerInterface $em) : Response
+    public function toggleTask(Task $task, EntityManagerInterface $em) : Response
     {
         $task->toggle(!$task->isDone());
         $em->flush();
@@ -73,7 +73,7 @@ class TaskController extends AbstractController
     }
 
     #[Route(path: '/tasks/{id}/delete', name: 'task_delete')]
-    public function deleteTaskAction(Task $task, EntityManagerInterface $em): Response
+    public function deleteTask(Task $task, EntityManagerInterface $em): Response
     {
         $em->remove($task);
         $em->flush();
