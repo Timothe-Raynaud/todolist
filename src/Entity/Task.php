@@ -12,7 +12,7 @@ class Task
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "AUTO")]
     #[ORM\Column(type: "integer")]
-    private int $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: "datetime")]
     private \DateTimeInterface $createdAt;
@@ -28,13 +28,17 @@ class Task
     #[ORM\Column(type: "boolean")]
     private bool $isDone;
 
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $user;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->isDone = false;
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -77,5 +81,17 @@ class Task
     public function toggle(bool $flag): void
     {
         $this->isDone = $flag;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
     }
 }
