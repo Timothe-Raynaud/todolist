@@ -5,6 +5,7 @@ namespace App\Tests\DataFixtures;
 use App\DataFixtures\TaskFixture;
 use App\DataFixtures\UserFixture;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -31,7 +32,7 @@ class UserFixtureTest extends KernelTestCase
         $fixture = new UserFixture($passwordHasher);
         $fixture->load($this->entityManager);
 
-        $fixture = new TaskFixture();
+        $fixture = new TaskFixture($container->get(UserRepository::class));
         $fixture->load($this->entityManager);
     }
 
@@ -39,7 +40,7 @@ class UserFixtureTest extends KernelTestCase
     public function testUserFixture(): void
     {
         $user = $this->entityManager->getRepository(User::class)->findAll();
-        $this->assertCount(1, $user);
+        $this->assertCount(2, $user);
 
         $this->assertEquals('aaaa', $user[0]->getUsername());
     }

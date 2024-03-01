@@ -10,7 +10,7 @@ class UserRepositoryTest extends KernelTestCase
 {
     private const USERNAME = 'TestUser';
     private const PASSWORD = 'TestPassword';
-    private const EMAIL = 'test@example.com';
+    private const EMAIL = 'testUser@example.com';
     private UserRepository $userRepository;
 
     protected function setUp(): void
@@ -27,12 +27,14 @@ class UserRepositoryTest extends KernelTestCase
         $user->setUsername(self::USERNAME);
         $user->setPassword(self::PASSWORD);
         $user->setEmail(self::EMAIL);
+        $user->setRoles([User::ROLE_USER]);
         $this->userRepository->save($user, true);
 
         $foundUser = $this->userRepository->find($user->getId());
         $this->assertNotNull($foundUser);
         $this->assertEquals(self::USERNAME, $foundUser->getUsername());
         $this->assertEquals(self::EMAIL, $foundUser->getEmail());
+        $this->assertEquals([User::ROLE_USER], $foundUser->getRoles());
     }
 
     public function testRemoveUser(): void

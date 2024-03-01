@@ -12,6 +12,7 @@ class TaskControllerTest extends WebTestCase
 {
     private EntityManagerInterface $entityManager;
     private KernelBrowser $client;
+    private User $user;
 
     protected function setUp(): void
     {
@@ -23,9 +24,9 @@ class TaskControllerTest extends WebTestCase
             ->get('doctrine')
             ->getManager();
 
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'aaaa']);
-        $this->assertTrue($user instanceof User, 'Aucun utilisateur trouvé');
-        $this->client->loginUser($user);
+        $this->user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'aaaa']);
+        $this->assertTrue($this->user instanceof User, 'Aucun utilisateur trouvé');
+        $this->client->loginUser($this->user);
     }
 
     public function testList(): void
@@ -69,6 +70,7 @@ class TaskControllerTest extends WebTestCase
         $task = new Task();
         $task->setTitle('Tâche originale');
         $task->setContent('Contenu original');
+        $task->setUser($this->user);
         $this->entityManager->persist($task);
         $this->entityManager->flush();
 
@@ -101,6 +103,7 @@ class TaskControllerTest extends WebTestCase
         $task = new Task();
         $task->setTitle('Tâche à basculer');
         $task->setContent('Contenu de la tâche');
+        $task->setUser($this->user);
         $this->entityManager->persist($task);
         $this->entityManager->flush();
 
@@ -127,6 +130,7 @@ class TaskControllerTest extends WebTestCase
         $task = new Task();
         $task->setTitle('Tâche à supprimer');
         $task->setContent('Contenu de la tâche');
+        $task->setUser($this->user);
         $this->entityManager->persist($task);
         $this->entityManager->flush();
 

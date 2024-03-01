@@ -45,6 +45,7 @@ class UserControllerTest extends WebTestCase
             'user[password][first]' => 'password',
             'user[password][second]' => 'password',
             'user[email]' => 'testuser@example.com',
+            'user[roles]' => User::ROLE_USER,
         ]);
 
         $this->client->submit($form);
@@ -70,6 +71,7 @@ class UserControllerTest extends WebTestCase
         $user->setUsername('originalUser');
         $user->setPassword('originalPassword');
         $user->setEmail('original@example.com');
+        $user->setRoles([User::ROLE_USER]);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
