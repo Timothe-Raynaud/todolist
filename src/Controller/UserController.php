@@ -11,26 +11,27 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserController extends AbstractController
 {
     #[Route(path: '/users', name: 'user_list')]
     public function list(UserRepository $userRepository): Response
     {
-        return $this->render('user/list.html.twig', ['users' => $userRepository->findAll()]);
+        return $this->render('app/user/list.html.twig', ['users' => $userRepository->findAll()]);
     }
 
     #[Route(path: '/users/create', name: 'user_create')]
-    public function create(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
+    public function create(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, ValidatorInterface $validator): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $password = $passwordHasher->hashPassword($user, $user->getPassword());
             $user->setPassword($password);
+            $user->setRoles([$form->get('roles')->getData()]);
 
             $em->persist($user);
             $em->flush();
@@ -40,7 +41,14 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_list');
         }
 
-        return $this->render('user/create.html.twig', ['form' => $form->createView()]);
+        if($form->isSubmitted()){
+            $errors = $validator->validate($user);
+        }
+
+        return $this->render('app/user/create.html.twig', [
+            'form' => $form->createView(),
+            'errors' => $errors ?? null,
+        ]);
     }
 
     #[Route(path: '/users/{id}/edit', name: 'user_edit')]
@@ -61,6 +69,6 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_list');
         }
 
-        return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
+        return $this->render('app/user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
     }
 }

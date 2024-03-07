@@ -16,7 +16,7 @@ class TaskController extends AbstractController
     #[Route(path: '/tasks', name: 'task_list')]
     public function list(TaskRepository $taskRepository) : Response
     {
-        return $this->render('task/list.html.twig', ['tasks' => $taskRepository->findAll()]);
+        return $this->render('app/task/list.html.twig', ['tasks' => $taskRepository->findAll()]);
     }
 
     #[Route(path: '/tasks/create', name: 'task_create')]
@@ -28,7 +28,7 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            $task->setUser($this->getUser());
             $em->persist($task);
             $em->flush();
 
@@ -37,7 +37,11 @@ class TaskController extends AbstractController
             return $this->redirectToRoute('task_list');
         }
 
-        return $this->render('task/create.html.twig', ['form' => $form->createView()]);
+        if ($form->isSubmitted()){
+            dd($errors = $form->getErrors(true, false));
+        }
+
+        return $this->render('app/task/create.html.twig', ['form' => $form->createView()]);
     }
 
     #[Route(path: '/tasks/{id}/edit', name: 'task_edit')]
@@ -55,7 +59,7 @@ class TaskController extends AbstractController
             return $this->redirectToRoute('task_list');
         }
 
-        return $this->render('task/edit.html.twig', [
+        return $this->render('app/task/edit.html.twig', [
             'form' => $form->createView(),
             'task' => $task,
         ]);
@@ -69,7 +73,7 @@ class TaskController extends AbstractController
 
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
 
-        return $this->redirectToRoute('task_list');
+        return $this->redirectToRoute('app/task_list');
     }
 
     #[Route(path: '/tasks/{id}/delete', name: 'task_delete')]
@@ -80,6 +84,6 @@ class TaskController extends AbstractController
 
         $this->addFlash('success', 'La tâche a bien été supprimée.');
 
-        return $this->redirectToRoute('task_list');
+        return $this->redirectToRoute('app/task_list');
     }
 }

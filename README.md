@@ -14,3 +14,11 @@ Voici les differentes étapes d'installation du projet en local :
 
 À la racine du projet, vous trouverez un dossier 'livrable' comprenant les different élement demandé pour le livrable
 - Un fichier symfonyInsight avec un lien vers la dernière analyse du projet.
+
+
+## Amélioration
+
+- Mise à jour symfony 3.3 vers 6.4
+- Mise à jour php5.6 vers 8.1
+- Mise à jour bootstrap v3 vers v5 (utilisation du CDN pour faciliter la migration)
+- Ajout du form_theme bootstrap

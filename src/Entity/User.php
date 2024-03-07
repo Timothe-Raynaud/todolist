@@ -34,9 +34,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $username;
 
     #[ORM\Column(type: "string", length: 64)]
-    #[Assert\PasswordStrength([
-        'minScore' => PasswordStrength::STRENGTH_WEAK
-    ])]
+    #[Assert\Length(
+        min: 4,
+        minMessage: 'Votre mot de passe doit contenir {{ limit }} characters minimum',
+    )]
     private string $password;
 
     #[ORM\Column(type: "json")]

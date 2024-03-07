@@ -1,0 +1,16 @@
+
+.error-form{
+    padding: 0.3rem 0.5rem;
+    margin-top: 0.8rem;
+    border-radius: 5px;
+    display: inline-block;
+    width: auto;
+}
+.error-form span{
+    font-weight: 600;
+}
+
+.label-form{
+    margin-top: 0.8rem;
+    font-weight: bold;
+}
