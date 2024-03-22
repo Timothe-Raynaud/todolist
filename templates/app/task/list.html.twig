@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-end">
-                        {% if task.isDone %}<i class="fa-solid fa-check fs-3"></i{% else %}<i class="fa-solid fa-xmark fs-3"></i>{% endif %}
+                        {% if task.isDone %}<i class="fa-solid fa-check fs-3 text-success"></i>{% else %}<i class="fa-solid fa-xmark fs-3 text-danger"></i>{% endif %}
                     </div>
                     <h4><a href="{{ path('task_edit', {'id' : task.id }) }}" class="text-black-50 text-decoration-none">{{ task.title }}</a></h4>
                 </div>
@@ -19,13 +19,15 @@
                 </div>
                 <div class="card-footer">
                     <form action="{{ path('task_toggle', {'id' : task.id }) }}">
-                        <button class="btn btn-success btn-sm float-end">
+                        <button class="btn btn-sm float-end {% if task.isDone %} btn-danger {% else %} btn-success{% endif %}">
                             {% if not task.isDone %}Marquer comme faite{% else %}Marquer non terminée{% endif %}
                         </button>
                     </form>
-                    <form action="{{ path('task_delete', {'id' : task.id }) }}">
-                        <button class="btn btn-danger btn-sm float-end me-2">Supprimer</button>
-                    </form>
+                    {% if is_granted('task.canDeleteTask', task) %}
+                        <form action="{{ path('task_delete', {'id' : task.id }) }}">
+                            <button class="btn btn-danger btn-sm float-end me-2">Supprimer</button>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

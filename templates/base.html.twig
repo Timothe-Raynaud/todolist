@@ -36,9 +36,13 @@
 
 <!-- Page Content -->
 <div class="container">
-    <div class="row justify-content-between">
-        <a href="{{ path('user_create') }}" class="btn btn-primary col-auto">Créer un utilisateur</a>
-
+    <div class="row {% if is_granted('user.canManageUser') %} justify-content-between {% else %} justify-content-end {% endif %} mb-2">
+        {% if is_granted('user.canManageUser') %}
+            <div class="col-auto">
+                <a href="{{ path('user_create') }}" class="btn btn-primary col-auto">Créer un utilisateur</a>
+                <a href="{{ path('user_list') }}" class="btn btn-secondary col-auto">List des utilisateurs</a>
+            </div>
+        {%  endif %}
         {% if app.user %}
             <a href="{{ path('user_logout') }}" class=" btn btn-danger col-auto">Se déconnecter</a>
         {% endif %}
@@ -65,7 +69,7 @@
 
                 {% block header_title %}{% endblock %}
                 {% block header_img %}
-                    <img class="slide-image mt-2" src="{{ asset('img/todolist_homepage.jpg') }}" alt="todo list">
+                    <img class="slide-image" src="{{ asset('img/todolist_homepage.jpg') }}" alt="todo list">
                 {% endblock %}
             </div>
         </div>
