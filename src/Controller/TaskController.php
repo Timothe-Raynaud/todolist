@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\User;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Util\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,9 +16,19 @@ use Symfony\Component\Routing\Attribute\Route;
 class TaskController extends AbstractController
 {
     #[Route(path: '/tasks', name: 'task_list')]
-    public function list(TaskRepository $taskRepository) : Response
+    public function list(TaskRepository $taskRepository, Request $request) : Response
     {
-        return $this->render('app/task/list.html.twig', ['tasks' => $taskRepository->findAll()]);
+        $user = $this->getUser();
+        if (!$user instanceof User){
+            throw new Exception("Une erreur est survenu.");
+        }
+
+        $isDone = $request->get('isDone');
+        $tasks = $taskRepository->getList($user, $isDone);
+
+        return $this->render('app/task/list.html.twig', [
+            'tasks' => $tasks
+        ]);
     }
 
     #[Route(path: '/tasks/create', name: 'task_create')]
@@ -41,7 +53,9 @@ class TaskController extends AbstractController
             dd($errors = $form->getErrors(true, false));
         }
 
-        return $this->render('app/task/create.html.twig', ['form' => $form->createView()]);
+        return $this->render('app/task/create.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     #[Route(path: '/tasks/{id}/edit', name: 'task_edit')]
@@ -73,7 +87,7 @@ class TaskController extends AbstractController
 
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
 
-        return $this->redirectToRoute('app/task_list');
+        return $this->redirectToRoute('task_list');
     }
 
     #[Route(path: '/tasks/{id}/delete', name: 'task_delete')]
@@ -84,6 +98,6 @@ class TaskController extends AbstractController
 
         $this->addFlash('success', 'La tâche a bien été supprimée.');
 
-        return $this->redirectToRoute('app/task_list');
+        return $this->redirectToRoute('task_list');
     }
 }

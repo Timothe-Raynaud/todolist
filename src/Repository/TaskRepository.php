@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Task;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
@@ -40,5 +41,22 @@ class TaskRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getList(User $user, ?bool $isDone = null): ?array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->innerJoin('t.user', 'u')
+            ->where('u.username = :anonyme')
+            ->orWhere('t.user = :user')
+            ->setParameter('anonyme', 'anonyme')
+            ->setParameter('user', $user)
+            ->orderBy('t.createdAt', 'DESC');
+
+        if ($isDone){
+            $qb->andWhere('t.isDone = 1');
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }
