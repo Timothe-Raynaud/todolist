@@ -2,6 +2,7 @@
 
 namespace App\Tests\Entity;
 
+use App\Entity\Task;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Validator\Constraints\Email;
@@ -108,5 +109,19 @@ class UserTest extends KernelTestCase
         $this->assertEquals($passwordBefore, $user->getPassword());
         $this->assertEquals($emailBefore, $user->getEmail());
         $this->assertEquals($rolesBefore, $user->getRoles());
+    }
+
+    public function testTaskRelationWithUser(): void
+    {
+        $task = new Task();
+        $task->setTitle("test1");
+        $task->setContent("bababababa");
+
+        $this->user->addTask($task);
+
+        $this->assertContains($task, $this->user->getTasks());
+        $this->user->removeTask($task);
+
+        $this->assertNotContains($task, $this->user->getTasks());
     }
 }

@@ -9,7 +9,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 #[ORM\Table("user")]
 #[ORM\Entity]
@@ -130,12 +129,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeTask(Task $task): static
     {
-        if ($this->tasks->removeElement($task)) {
-            // set the owning side to null (unless already changed)
-            if ($task->getUser() === $this) {
-                $task->setUser(null);
-            }
-        }
+        $this->tasks->removeElement($task);
 
         return $this;
     }

@@ -7,6 +7,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class TaskControllerTest extends WebTestCase
 {
@@ -32,11 +33,13 @@ class TaskControllerTest extends WebTestCase
     public function testList(): void
     {
         $crawler = $this->client->request('GET', '/tasks');
-
         $this->assertResponseIsSuccessful();
 
         $tasks = $this->entityManager->getRepository(Task::class)->findAll();
-        $this->assertSelectorCount(count($tasks),'.thumbnail');
+        $this->assertSelectorCount(count($tasks),'.card');
+
+        $deleteButton = $crawler->selectButton('Supprimer');
+        $this->assertCount(10, $deleteButton);
     }
 
     public function testCreate(): void

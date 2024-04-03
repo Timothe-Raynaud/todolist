@@ -9,6 +9,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtureTest extends KernelTestCase
@@ -29,7 +30,8 @@ class UserFixtureTest extends KernelTestCase
         $purger->purge();
 
         $passwordHasher = $container->get(UserPasswordHasherInterface::class);
-        $fixture = new UserFixture($passwordHasher);
+        $parameterBag = $container->get(ParameterBagInterface::class);
+        $fixture = new UserFixture($passwordHasher, $parameterBag);
         $fixture->load($this->entityManager);
 
         $fixture = new TaskFixture($container->get(UserRepository::class));

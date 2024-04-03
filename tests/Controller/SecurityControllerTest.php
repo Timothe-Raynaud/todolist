@@ -9,7 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class SecurityControllerTest extends WebTestCase
 {
-    private EntityManagerInterface $entityManager;
     private KernelBrowser $client;
 
     protected function setUp(): void
@@ -17,10 +16,6 @@ class SecurityControllerTest extends WebTestCase
         parent::setUp();
 
         $this->client = static::createClient();
-
-        $this->entityManager = $this->client->getContainer()
-            ->get('doctrine')
-            ->getManager();
     }
 
     public function testLogin(): void

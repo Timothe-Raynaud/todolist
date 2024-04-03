@@ -7,6 +7,7 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * @extends ServiceEntityRepository<Task>
@@ -18,7 +19,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TaskRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private readonly ParameterBagInterface $parameterBag)
     {
         parent::__construct($registry, Task::class);
 
@@ -49,7 +50,7 @@ class TaskRepository extends ServiceEntityRepository
             ->innerJoin('t.user', 'u')
             ->where('u.username = :anonyme')
             ->orWhere('t.user = :user')
-            ->setParameter('anonyme', 'anonyme')
+            ->setParameter('anonyme', $this->parameterBag->get('anonyme_user'))
             ->setParameter('user', $user)
             ->orderBy('t.createdAt', 'DESC');
 
