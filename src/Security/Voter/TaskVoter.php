@@ -36,7 +36,6 @@ class TaskVoter extends Voter
             self::CAN_DELETE_TASK => $this->canDeleteTask($subject, $user),
             default => false,
         };
-
     }
 
     public function canDeleteTask(Task $task, UserInterface $user): bool

@@ -6,16 +6,23 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Container;
 
 class SecurityControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
+    private Container $container;
+    private EntityManagerInterface $entityManager;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->client = static::createClient();
+        $this->container = self::getContainer();
+        $this->entityManager = $this->container->get('doctrine')
+            ->getManager();
     }
 
     public function testLogin(): void
@@ -44,5 +51,27 @@ class SecurityControllerTest extends WebTestCase
         $crawler = $this->client->followRedirect();
 
         $this->assertStringContainsString('/', $this->client->getRequest()->getUri(), 'La redirection vers la liste des utilisateurs a échoué.');
+    }
+
+    public function testLoginCheck(): void
+    {
+        $crawler = $this->client->request('GET', '/login_check');
+        $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
+
+    }
+
+    public function testLogout(): void
+    {
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'aaaa']);
+        $this->assertTrue($user instanceof User, 'Aucun utilisateur trouvé');
+
+        $this->client->loginUser($user);
+
+        $this->client->request('GET', '/logout');
+        $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
+        $this->client->followRedirect();
+
+        $token = $this->container->get('security.token_storage')->getToken();
+        $this->assertNull($token, 'Un token de session existe');
     }
 }

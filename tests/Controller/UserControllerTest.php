@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
+use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -39,6 +40,17 @@ class UserControllerTest extends WebTestCase
     public function testCreateUser(): void
     {
         $crawler = $this->client->request('GET', '/users/create');
+
+        $form = $crawler->selectButton('Ajouter')->form([
+            'user[username]' => 'testUser',
+            'user[password][first]' => 'password',
+            'user[password][second]' => 'p',
+            'user[email]' => 'testuser@example.com',
+            'user[roles]' => User::ROLE_USER,
+        ]);
+        $this->client->submit($form);
+
+        $this->assertStringContainsString('Les deux mots de passe doivent correspondre.', $this->client->getResponse()->getContent());
 
         $form = $crawler->selectButton('Ajouter')->form([
             'user[username]' => 'testUser',

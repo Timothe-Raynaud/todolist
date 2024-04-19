@@ -20,7 +20,7 @@ class TaskController extends AbstractController
     {
         $user = $this->getUser();
         if (!$user instanceof User){
-            throw new Exception("Une erreur est survenu.");
+            throw new Exception("Une erreur est survenue.");
         }
 
         $isDone = $request->get('isDone');
@@ -47,10 +47,6 @@ class TaskController extends AbstractController
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
 
             return $this->redirectToRoute('task_list');
-        }
-
-        if ($form->isSubmitted()){
-            dd($errors = $form->getErrors(true, false));
         }
 
         return $this->render('app/task/create.html.twig', [
