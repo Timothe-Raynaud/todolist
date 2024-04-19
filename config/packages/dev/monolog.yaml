@@ -3,7 +3,7 @@ monolog:
     file_log:
       type: stream
       path: "%kernel.logs_dir%/%kernel.environment%.log"
-      level: debug
+      level: error
       max_files: 10
 
     syslog_handler:
