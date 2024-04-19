@@ -16,13 +16,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserController extends AbstractController
 {
-    #[Route(path: '/users', name: 'user_list')]
+    #[Route(path: '/users', name: 'user_list', methods: ['GET'])]
     public function list(UserRepository $userRepository): Response
     {
         return $this->render('app/user/list.html.twig', ['users' => $userRepository->findAll()]);
     }
 
-    #[Route(path: '/users/create', name: 'user_create')]
+    #[Route(path: '/users/create', name: 'user_create', methods: ['GET', 'POST'])]
     #[IsGranted('user.canManageUser')]
     public function create(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, ValidatorInterface $validator): Response
     {
@@ -53,7 +53,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/users/{id}/edit', name: 'user_edit')]
+    #[Route(path: '/users/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
     public function edit(User $user, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
     {
         $form = $this->createForm(UserType::class, $user);

@@ -36,7 +36,7 @@ class UserVoter extends Voter
         };
     }
 
-    public function canManageUser($user): bool
+    public function canManageUser(UserInterface $user): bool
     {
         return !empty(array_intersect($user->getRoles(), [User::ROLE_ADMIN]));
     }

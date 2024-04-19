@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class TaskController extends AbstractController
 {
-    #[Route(path: '/tasks', name: 'task_list')]
+    #[Route(path: '/tasks', name: 'task_list', methods: ['GET'])]
     public function list(TaskRepository $taskRepository, Request $request) : Response
     {
         $user = $this->getUser();
@@ -31,7 +31,7 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/tasks/create', name: 'task_create')]
+    #[Route(path: '/tasks/create', name: 'task_create', methods: ['GET', 'POST'])]
     public function create(Request $request, EntityManagerInterface $em) : Response
     {
         $task = new Task();
@@ -54,7 +54,7 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/tasks/{id}/edit', name: 'task_edit')]
+    #[Route(path: '/tasks/{id}/edit', name: 'task_edit', methods: ['GET', 'POST'])]
     public function edit(Task $task, Request $request, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(TaskType::class, $task);
@@ -75,24 +75,32 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/tasks/{id}/toggle', name: 'task_toggle')]
+    #[Route(path: '/tasks/{id}/toggle', name: 'task_toggle', methods: ['GET'])]
     public function toggleTask(Task $task, EntityManagerInterface $em) : Response
     {
-        $task->toggle(!$task->isDone());
-        $em->flush();
+        if ($this->isGranted('task.canManageTask', $task)){
+            $task->toggle(!$task->isDone());
+            $em->flush();
 
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+            $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        } else {
+            $this->addFlash('error', ('Vous ne pouvez pas modifier cette tache.'));
+        }
 
         return $this->redirectToRoute('task_list');
     }
 
-    #[Route(path: '/tasks/{id}/delete', name: 'task_delete')]
+    #[Route(path: '/tasks/{id}/delete', name: 'task_delete', methods: ['GET'])]
     public function deleteTask(Task $task, EntityManagerInterface $em): Response
     {
-        $em->remove($task);
-        $em->flush();
+        if ($this->isGranted('task.canManageTask', $task)){
+            $em->remove($task);
+            $em->flush();
 
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
+            $this->addFlash('success', 'La tâche a bien été supprimée.');
+        } else {
+            $this->addFlash('error', ('Vous ne pouvez pas supprimer cette tache.'));
+        }
 
         return $this->redirectToRoute('task_list');
     }

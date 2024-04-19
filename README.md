@@ -28,3 +28,7 @@ Voici les differentes étapes d'installation du projet en local :
 - Mise à jour php5.6 vers 8.1
 - Mise à jour bootstrap v3 vers v5 (utilisation du CDN pour faciliter la migration)
 - Ajout du form_theme bootstrap
+
+# Audit de qualité de code
+
+- Utiliser Symfony insight connecter au projet et faire des analise sur la base d'un projet symfony 6. Aucune erreur ne devrait être present si le code est écrit avec qualité. 

@@ -23,7 +23,7 @@
                             {% if not task.isDone %}Marquer comme faite{% else %}Marquer non terminée{% endif %}
                         </button>
                     </form>
-                    {% if is_granted('task.canDeleteTask', task) %}
+                    {% if is_granted('task.canManageTask', task) %}
                         <form action="{{ path('task_delete', {'id' : task.id }) }}">
                             <button class="btn btn-danger btn-sm float-end me-2">Supprimer</button>
                         </form>
