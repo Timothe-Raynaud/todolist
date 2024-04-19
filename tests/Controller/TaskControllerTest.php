@@ -2,16 +2,22 @@
 
 namespace App\Tests\Controller;
 
+use App\Controller\TaskController;
 use App\Entity\Task;
 use App\Entity\User;
+use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class TaskControllerTest extends WebTestCase
 {
     private EntityManagerInterface $entityManager;
     private KernelBrowser $client;
+    private User $user;
 
     protected function setUp(): void
     {
@@ -23,24 +29,34 @@ class TaskControllerTest extends WebTestCase
             ->get('doctrine')
             ->getManager();
 
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'aaaa']);
-        $this->assertTrue($user instanceof User, 'Aucun utilisateur trouvé');
-        $this->client->loginUser($user);
+        $this->user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'aaaa']);
+        $this->assertTrue($this->user instanceof User, 'Aucun utilisateur trouvé');
+        $this->client->loginUser($this->user);
     }
 
     public function testList(): void
     {
         $crawler = $this->client->request('GET', '/tasks');
-
         $this->assertResponseIsSuccessful();
 
         $tasks = $this->entityManager->getRepository(Task::class)->findAll();
-        $this->assertSelectorCount(count($tasks),'.thumbnail');
+        $this->assertSelectorCount(count($tasks),'.card');
+
+        $deleteButton = $crawler->selectButton('Supprimer');
+        $this->assertCount(10, $deleteButton);
     }
 
     public function testCreate(): void
     {
         $crawler = $this->client->request('GET', '/tasks/create');
+
+        $form = $crawler->selectButton('Ajouter')->form([
+            'task[title]' => 'Nouvelle tâche',
+            'task[content]' => '',
+        ]);
+        $this->client->submit($form);
+
+        $this->assertStringContainsString('Vous devez saisir du contenu.', $this->client->getResponse()->getContent());
 
         $form = $crawler->selectButton('Ajouter')->form([
             'task[title]' => 'Nouvelle tâche',
@@ -69,6 +85,7 @@ class TaskControllerTest extends WebTestCase
         $task = new Task();
         $task->setTitle('Tâche originale');
         $task->setContent('Contenu original');
+        $task->setUser($this->user);
         $this->entityManager->persist($task);
         $this->entityManager->flush();
 
@@ -101,6 +118,7 @@ class TaskControllerTest extends WebTestCase
         $task = new Task();
         $task->setTitle('Tâche à basculer');
         $task->setContent('Contenu de la tâche');
+        $task->setUser($this->user);
         $this->entityManager->persist($task);
         $this->entityManager->flush();
 
@@ -127,6 +145,7 @@ class TaskControllerTest extends WebTestCase
         $task = new Task();
         $task->setTitle('Tâche à supprimer');
         $task->setContent('Contenu de la tâche');
+        $task->setUser($this->user);
         $this->entityManager->persist($task);
         $this->entityManager->flush();
 
@@ -141,5 +160,27 @@ class TaskControllerTest extends WebTestCase
         $this->assertStringContainsString('/tasks', $this->client->getRequest()->getUri(), 'La redirection vers la liste des tâches a échoué.');
         $flashMessage = $this->client->getCrawler()->filter('div.alert-success')->text();
         $this->assertStringContainsString('La tâche a bien été supprimée.', $flashMessage, 'Le message flash attendu n\'a pas été trouvé.');
+    }
+
+    public function testListWithAuthenticatedUser(): void
+    {
+        $user = $this->createMock(User::class);
+
+        $taskRepository = $this->createMock(TaskRepository::class);
+        $taskRepository->expects($this->once())->method('getList')->willReturn([]);
+
+        $security = $this->createMock(Security::class);
+        $security->method('getUser')->willReturn($user);
+
+        $this->client->getContainer()->set('security.helper', $security);
+
+        $request = new Request();
+        $request->query->set('isDone', true);
+
+        $controller = $this->client->getContainer()->get(TaskController::class);
+
+        $response = $controller->list($taskRepository, $request);
+
+        $this->assertEquals(200, $response->getStatusCode());
     }
 }

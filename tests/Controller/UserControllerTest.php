@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
+use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -43,8 +44,20 @@ class UserControllerTest extends WebTestCase
         $form = $crawler->selectButton('Ajouter')->form([
             'user[username]' => 'testUser',
             'user[password][first]' => 'password',
+            'user[password][second]' => 'p',
+            'user[email]' => 'testuser@example.com',
+            'user[roles]' => User::ROLE_USER,
+        ]);
+        $this->client->submit($form);
+
+        $this->assertStringContainsString('Les deux mots de passe doivent correspondre.', $this->client->getResponse()->getContent());
+
+        $form = $crawler->selectButton('Ajouter')->form([
+            'user[username]' => 'testUser',
+            'user[password][first]' => 'password',
             'user[password][second]' => 'password',
             'user[email]' => 'testuser@example.com',
+            'user[roles]' => User::ROLE_USER,
         ]);
 
         $this->client->submit($form);
@@ -70,6 +83,7 @@ class UserControllerTest extends WebTestCase
         $user->setUsername('originalUser');
         $user->setPassword('originalPassword');
         $user->setEmail('original@example.com');
+        $user->setRoles([User::ROLE_USER]);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 

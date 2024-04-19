@@ -2,6 +2,7 @@
 
 namespace App\Tests\Entity;
 
+use App\Entity\Task;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Validator\Constraints\Email;
@@ -10,7 +11,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class UserTest extends KernelTestCase
 {
     private User $user;
-    private $validator;
+    private mixed $validator;
 
     protected function setUp(): void
     {
@@ -55,7 +56,8 @@ class UserTest extends KernelTestCase
 
     public function testGetRoles(): void
     {
-        $this->assertEquals(['ROLE_USER'], $this->user->getRoles());
+        $this->user->setRoles([User::ROLE_ADMIN]);
+        $this->assertEquals(['ROLE_ADMIN'], $this->user->getRoles());
     }
 
     public function testGetUserIdentifier(): void
@@ -91,11 +93,13 @@ class UserTest extends KernelTestCase
         $user->setUsername('TestCredentialUser');
         $user->setPassword('TestCredentialPassword');
         $user->setEmail('testCredential@example.com');
+        $user->setRoles([User::ROLE_USER]);
 
         // État avant eraseCredentials
         $usernameBefore = $user->getUsername();
         $passwordBefore = $user->getPassword();
         $emailBefore = $user->getEmail();
+        $rolesBefore = $user->getRoles();
 
         // Appel de eraseCredentials
         $user->eraseCredentials();
@@ -104,5 +108,20 @@ class UserTest extends KernelTestCase
         $this->assertEquals($usernameBefore, $user->getUsername());
         $this->assertEquals($passwordBefore, $user->getPassword());
         $this->assertEquals($emailBefore, $user->getEmail());
+        $this->assertEquals($rolesBefore, $user->getRoles());
+    }
+
+    public function testTaskRelationWithUser(): void
+    {
+        $task = new Task();
+        $task->setTitle("test1");
+        $task->setContent("bababababa");
+
+        $this->user->addTask($task);
+
+        $this->assertContains($task, $this->user->getTasks());
+        $this->user->removeTask($task);
+
+        $this->assertNotContains($task, $this->user->getTasks());
     }
 }
