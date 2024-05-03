@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class TaskVoter extends Voter
 {
-    public const CAN_DELETE_TASK = 'task.canDeleteTask';
+    public const CAN_MANAGE_TASK = 'task.canManageTask';
 
     public function __construct(private readonly ParameterBagInterface $parameterBag)
     {
@@ -20,7 +20,7 @@ class TaskVoter extends Voter
     protected function supports(string $attribute, mixed $subject): bool
     {
         return in_array($attribute, [
-                self::CAN_DELETE_TASK
+                self::CAN_MANAGE_TASK
             ])
             && $subject instanceof Task;
     }
@@ -33,12 +33,12 @@ class TaskVoter extends Voter
         }
 
         return match ($attribute) {
-            self::CAN_DELETE_TASK => $this->canDeleteTask($subject, $user),
+            self::CAN_MANAGE_TASK => $this->canManageTask($subject, $user),
             default => false,
         };
     }
 
-    public function canDeleteTask(Task $task, UserInterface $user): bool
+    public function canManageTask(Task $task, UserInterface $user): bool
     {
         $taskUser = $task->getUser();
         if (!$taskUser instanceof User){
