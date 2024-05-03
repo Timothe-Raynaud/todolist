@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
-#[ORM\Table]
+#[ORM\Table(indexes: [
+    new Index(columns: ["user"], name: "IDX_TASK_USER")
+])]
 class Task
 {
     #[ORM\Id]

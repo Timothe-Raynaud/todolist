@@ -30,7 +30,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/login_check', name: 'login_check', methods: ['GET'])]
+    #[Route(path: '/login_check', name: 'login_check', methods: ['GET', 'POST'])]
     public function loginCheck(): void
     {
         // This code is never executed.
