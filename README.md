@@ -9,8 +9,8 @@ Voici les differentes étapes d'installation du projet en local :
 
 - Il y a ensuite deux possibilités : 
   - soit c'est pour un __UPDATE__ de la version précédente dans quel cas faire ce qui suit :
-    - `php bin/console doctrine:migrations:migrate`
-    - 
+    - `php bin/console doctrine:migrations:execute --up 'DoctrineMigrations\\Version20240419082748'`
+    
   - Soit c'est une __PREMIERE INSTALLATION__ dans quel cas faire ceci :
       - `php bin/console doctrine:database:create`
       - `php bin/console doctrine:migrations:diff`
@@ -29,6 +29,3 @@ Voici les differentes étapes d'installation du projet en local :
 - Mise à jour bootstrap v3 vers v5 (utilisation du CDN pour faciliter la migration)
 - Ajout du form_theme bootstrap
 
-# Audit de qualité de code
-
-- Utiliser Symfony insight connecter au projet et faire des analise sur la base d'un projet symfony 6. Aucune erreur ne devrait être present si le code est écrit avec qualité. 

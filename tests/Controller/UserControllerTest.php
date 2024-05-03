@@ -87,7 +87,7 @@ class UserControllerTest extends WebTestCase
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        $crawler = $this->client->request('GET', '/users/'.$user->getId().'/edit');
+        $crawler = $this->client->request('GET', '/users/' . $user->getId() . '/edit');
 
         $form = $crawler->selectButton('Modifier')->form([
             'user[username]' => 'editedUser',
