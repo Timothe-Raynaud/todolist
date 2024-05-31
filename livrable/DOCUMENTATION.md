@@ -38,3 +38,18 @@ Les template de gestion d'authentification se range donc tous dans `templates/ap
 L'entité _User_ est là pour définir tous les parameter de l'utilisateur. C'est ici que l'on va y définir ce qui est utilisé comme l'identifiant via le `getUserIdentifier`. 
 L'entité va permettre d'enregistrer ces informations en base de donnée. Si vous souhaitez modifiant l'identifiant par l'email, il faudra ajouter un champ _email_ ainsi que modifier la fonction `getUserIdentifier` par `$this->getEmail`.
 
+# Workflow
+
+
+Chaque fois qu'une nouvelle fonctionnalité est ajouté, il faut :
+- Créer les tests associés.
+- Respecter la documentation `AUDIT_CODE_PERFORMANCE`
+- Respecter le Gitflow 
+
+## Gitflow 
+
+- Pour toute implementation de nouvelles fonctionnalités, il faudra créer une nouvelle branche sur le repository en la nommant en anglais par le nom ou l'indication de la nouvelle fonctionnalité. 
+- Une fois que le développement est terminé, il faudra ensuite créer une pull request vers la branch `testing`. Si un lead développeur gére le projet, ce sera à lui de prendre en charge le merge de la pull request afin qu'il revérifie le code.
+- Si un serveur de test est disponible pour faire du recettage le déploiement se fera depuis la branch testing. Les correctifs seront apportés sur la branche de la fonctionnalité et poussé sur la branche testing jusqu'à ce que tout soit opérationnel. La branch `testing` pourra ensuite être poussé vers la branch master pour être déployé en ligne. 
+
+
