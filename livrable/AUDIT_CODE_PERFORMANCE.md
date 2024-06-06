@@ -1,6 +1,6 @@
 # Audit de qualité de code
 
-Nous utiliserons `Symfony insight`. Pour cela, il faut connecter le repository à la plateforme en le configurant sur un projet symfony. À chaque commit le code sera automatiquement annalysé et, en cas de manquement sur la qualité du code, retournera des erreurs qu'il faudra corriger. Le but est de garder un code qui ne génère aucune erreur chez symfony insight pour préserver la qualité du code. 
+Nous utiliserons `Symfony insight` (`https://insight.symfony.com/`). Pour cela, il faut connecter le repository à la plateforme en le configurant sur un projet symfony. À chaque commit le code sera automatiquement analysé et, en cas de manquement sur la qualité du code, retournera des erreurs qu'il faudra corriger. Le but est de garder un code qui ne génère aucune erreur chez symfony insight pour préserver la qualité du code. 
 
 # Audit de performance de code
 
@@ -10,7 +10,7 @@ Nous utiliserons `Symfony insight`. Pour cela, il faut connecter le repository �
     - Symfony initialization (Maximum): 100ms
     - Peak memory usage (Maximum): 200mib
 - Ces valeurs prennent en compte l'idée que la plateforme peut évoluer et devenir plus importante. Avec ce que la plateforme propose dans l'immédiat, nous devons nous trouver bien en dessous de ces valeurs.   
-- Il est important de mettre en place des pratiques telles qu'indéxés les élements utils sur la base de donnée ou créer des requetes qui restreignent au mieux le nombre de recherches pour rester sur de bonnes bases
+- Il est important de mettre en place des pratiques telles qu'indéxer les élements utils sur la base de donnée ou créer des requêtes qui restreignent au mieux le nombre de recherches pour rester sur de bonnes bases
 
 ### Valeurs actuelles vs anciennes :
 
