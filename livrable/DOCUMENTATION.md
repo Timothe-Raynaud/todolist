@@ -41,7 +41,7 @@ L'entité va permettre d'enregistrer ces informations en base de donnée. Si vou
 # Workflow
 
 
-Chaque fois qu'une nouvelle fonctionnalité est ajouté, il faut :
+Chaque fois qu'une nouvelle fonctionnalité est ajoutée, il faut :
 - Créer les tests associés.
 - Respecter la documentation `AUDIT_CODE_PERFORMANCE`
 - Respecter le Gitflow 
@@ -50,6 +50,4 @@ Chaque fois qu'une nouvelle fonctionnalité est ajouté, il faut :
 
 - Pour toute implementation de nouvelles fonctionnalités, il faudra créer une nouvelle branche sur le repository en la nommant en anglais par le nom ou l'indication de la nouvelle fonctionnalité. 
 - Une fois que le développement est terminé, il faudra ensuite créer une pull request vers la branch `testing`. Si un lead développeur gére le projet, ce sera à lui de prendre en charge le merge de la pull request afin qu'il revérifie le code.
-- Si un serveur de test est disponible pour faire du recettage le déploiement se fera depuis la branch testing. Les correctifs seront apportés sur la branche de la fonctionnalité et poussé sur la branche testing jusqu'à ce que tout soit opérationnel. La branch `testing` pourra ensuite être poussé vers la branch master pour être déployé en ligne. 
-
-
+- Si un serveur de test est disponible pour faire du recettage le déploiement se fera depuis la branch testing. Les correctifs seront apportés sur la branch de la fonctionnalité et poussée sur la branch testing jusqu'à ce que tout soit opérationnel. La branch `testing` pourra ensuite être poussée vers la branch master pour être déployé en ligne. 
