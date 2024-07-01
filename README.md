@@ -3,8 +3,8 @@
 _php 8.1_ | _Symfony 6.4_
 
 Voici les differentes étapes d'installation du projet en local :
+- Configurer un .env.local pour qu'il ait access à une base de données.
 - Lancer la commande : Composer install
-- Parameter .env.local pour qu'il ait access à une base de données.
 
 
 - Il y a ensuite deux possibilités : 
@@ -22,10 +22,8 @@ Voici les differentes étapes d'installation du projet en local :
 - Un fichier symfonyInsight avec un lien vers la dernière analyse du projet.
 
 
-## Amélioration
+## Test
 
-- Mise à jour symfony 3.3 vers 6.4
-- Mise à jour php5.6 vers 8.1
-- Mise à jour bootstrap v3 vers v5 (utilisation du CDN pour faciliter la migration)
-- Ajout du form_theme bootstrap
-
+Pour lancer le test coverage l faut faire la commande suivante :
+`vendor/bin/phpunit --coverage-html public/test-coverage`
+Si les tests se sont bien effectué un dossier __test-coverage__ sera créé dans le dossier public avec un __index.html__ permettant d'accéder à une interface pour voir tout ce qui est testé ou ne l'est pas.  
