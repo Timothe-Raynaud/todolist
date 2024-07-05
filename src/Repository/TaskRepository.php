@@ -56,6 +56,8 @@ class TaskRepository extends ServiceEntityRepository
 
         if ($isDone){
             $qb->andWhere('t.isDone = 1');
+        } else {
+            $qb->andWhere('t.isDone = 0');
         }
 
         return $qb->getQuery()->getResult();
